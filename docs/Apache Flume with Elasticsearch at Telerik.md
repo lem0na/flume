@@ -14,7 +14,7 @@ Example how log event message should look like:
       "headers": {
         "indexName" : "delme", "indexType" : "logentry"
       },
-      "body": "{  \"Metadata\": [    \"0\",    \"Information\",    \"PLATFORM-PL1xxxxxxxx\",    \"Platform.CPBC.Container.exe\",    \"5584\",    \"Platform.CPBC.Container\",    null,    \"2244\"  ],  \"Categories\": [    \"PLATFORM-PL1.platform.cpbc.bl.xxxx\"  ],  \"ExtendedProperties\": {    \"Controller.PipelineName\": \"Messaging_ProcessPerformCalculationMessages\"  },  \"Message\": \"We are simultaneously running bulk operations on the two documents and their respective indices\",  \"Timestamp\": \"2013-10-04T13:41:45.5523494Z\"}"
+      "body": "{\"Metadata\": [\"0\",\"Information\",\"PLATFORM-PL1\",\"Platform.CPBC.Container.exe\",\"5584\",\"Platform.CPBC.Container\",null,\"2244\"],\"Categories\": [\"PLATFORM-PL1.platform.cpbc.bl.xxxx\"],\"ExtendedProperties\": {\"Controller.PipelineName\":\"Messaging_ProcessPerformCalculationMessages\"},\"Message\": \"We are simultaneously running bulk operations on the two documents and their respective indices\",\"Timestamp\":\"2013-10-04T13:41:45.5523494Z\"}"    
     }]
 
 It is standard Apache Flume message that consists from two parts - headers and body.
