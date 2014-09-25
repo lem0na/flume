@@ -62,28 +62,28 @@ If this templates are not specified or did not match to a fields from headers se
 Since Apache Flume nodes comunicate using avro protocol it is possible to have Apache Flume agent version 1.3 (used in our current disk images) that comunicates with Apache Flume concentrator build from this sources.
 
 In ES above example message will be stored like this:
-    {
-        "body": {
-          "Message": "We are simultaneously running bulk operations on the two documents and their respective indices",
-          "Metadata": [
-            "0",
-            "Information",
-            "PLATFORM-PL1",
-            "Platform.CPBC.Container.exe",
-            "5584",
-            "Platform.CPBC.Container",
-            null,
-            "2244"
-          ],
-          "ExtendedProperties": {
-            "Controller.PipelineName": "Messaging_ProcessPerformCalculationMessages"
-          },
-          "Timestamp": "2013-10-04T13:41:45.5523494Z",
-          "Categories": [
-            "PLATFORM-PL1.platform.cpbc.bl.xxxx"
-          ]
-        },
-        "host": "localhost"
-    }
+  {
+    "body": {
+      "Message": "We are simultaneously running bulk operations on the two documents and their respective indices",
+      "Metadata": [
+      "0",
+      "Information",
+      "PLATFORM-PL1",
+      "Platform.CPBC.Container.exe",
+      "5584",
+      "Platform.CPBC.Container",
+      null,
+      "2244"
+      ],
+      "ExtendedProperties": {
+      "Controller.PipelineName": "Messaging_ProcessPerformCalculationMessages"
+      },
+      "Timestamp": "2013-10-04T13:41:45.5523494Z",
+      "Categories": [
+      "PLATFORM-PL1.platform.cpbc.bl.xxxx"
+      ]
+    },
+    "host": "localhost"
+  }
 
 When comparing with messages stored when using Apache Flume RabbitMQ sink + RabbitMQ +  Elasticsearch RabbitMQ river there is an additional field "body" that contains the log entry
