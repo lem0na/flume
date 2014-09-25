@@ -59,4 +59,4 @@ Config file is straiforward. Most interesting are last 3 lines:
 
 If this templates are not specified or did not match to a fields from headers section of the payload if will be used default values. For index name it is "flume" and for index type it is "log"
 
-
+Since Apache Flume nodes comunicate using avro protocol it is possible to have Apache Flume agent version 1.3 (used in our current disk images) that comunicates with Apache Flume concentrator build from this sources.
