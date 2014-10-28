@@ -51,6 +51,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -185,8 +186,23 @@ public class ElasticSearchSink extends AbstractSink implements Configurable {
         if (event == null) {
           break;
         }
-        String realIndexType = BucketPath.escapeString(indexType, event.getHeaders());
-        client.addEvent(event, indexNameBuilder, realIndexType, ttlMs);
+        String realIndexType = "";
+        String realIndexName = "";
+        Map<String, String> headers = event.getHeaders();
+        realIndexType = BucketPath.escapeString(indexType, headers);
+        realIndexName = BucketPath.escapeString(indexName, headers);
+
+        //logger.info(String.format("ES message indexName: '%s', indexType: '%s'.", indexName, indexType));
+        //logger.info(String.format("ES message realIndexName: '%s', realIndexType: '%s'.", realIndexName, realIndexType));
+
+        //if calculated ES indexname or indextype is empty we skip this message since it is malformed
+        if(!(realIndexType.isEmpty() || realIndexType.isEmpty())) {
+            client.addEvent(event, indexNameBuilder, realIndexType, ttlMs);
+        } else {
+            String errormsg = String.format("Malformed ES message indexName: '%s', indexType: '%s'. Skipping ... ", realIndexName, realIndexType);
+            logger.error(errormsg);
+            continue;
+        }
       }
 
       if (count <= 0) {
