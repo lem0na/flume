@@ -46,6 +46,7 @@ import org.apache.flume.sink.elasticsearch.client.ElasticSearchClient;
 import org.apache.flume.sink.elasticsearch.client.ElasticSearchClientFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.apache.flume.sink.elasticsearch.DumpToString;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
@@ -177,6 +178,8 @@ public class ElasticSearchSink extends AbstractSink implements Configurable {
     Status status = Status.READY;
     Channel channel = getChannel();
     Transaction txn = channel.getTransaction();
+    int skippedCount = 0;
+    int addedCount = 0;
     try {
       txn.begin();
       int count;
@@ -186,24 +189,41 @@ public class ElasticSearchSink extends AbstractSink implements Configurable {
         if (event == null) {
           break;
         }
-        String realIndexType = "";
-        String realIndexName = "";
         Map<String, String> headers = event.getHeaders();
-        realIndexType = BucketPath.escapeString(indexType, headers);
-        realIndexName = BucketPath.escapeString(indexName, headers);
+        String realIndexType = BucketPath.escapeString(indexType, headers);
+        String realIndexName = BucketPath.escapeString(indexName, headers);
 
         //logger.info(String.format("ES message indexName: '%s', indexType: '%s'.", indexName, indexType));
         //logger.info(String.format("ES message realIndexName: '%s', realIndexType: '%s'.", realIndexName, realIndexType));
 
+//        if(realIndexName.startsWith("fs-installer.metrics")) {
+//            String body = new String(event.getBody(), "UTF-8");
+//            String heads = DumpToString.dump(event.getHeaders());
+//            String errormsg = String.format("Adding event: 'indexName:%s;indexType:%s', '%s'", realIndexName, realIndexType, body);
+//            logger.info(errormsg);
+//        }
+
         //if calculated ES indexname or indextype is empty we skip this message since it is malformed
-        if(!(realIndexType.isEmpty() || realIndexType.isEmpty())) {
+        if(!(realIndexName.isEmpty() || realIndexType.isEmpty())) {
+//            String body = new String(event.getBody(), "UTF-8");
+//            String heads = DumpToString.dump(event.getHeaders());
+//            String errormsg = String.format("Adding event: 'indexName:%s;indexType:%s', '%s'", realIndexName, realIndexType, body);
+//            logger.info(errormsg);
             client.addEvent(event, indexNameBuilder, realIndexType, ttlMs);
+            addedCount ++;
         } else {
-            String errormsg = String.format("Malformed ES message indexName: '%s', indexType: '%s'. Skipping ... ", realIndexName, realIndexType);
+            String body = new String(event.getBody(), "UTF-8");
+            String errormsg = String.format("Malformed ES message indexName: '%s', indexType: '%s', body: '%s'. Skipping ... ", realIndexName, realIndexType, body);
             logger.error(errormsg);
+            skippedCount ++;
             continue;
         }
       }
+
+
+      logger.info(String.format("COUNT: %d; SKIPPEDCONT: %d; ADDEDCOUNT: %d", count, skippedCount, addedCount));
+      count = count - skippedCount;
+      logger.info(String.format("COUNT: %d; SKIPPEDCONT: %d; ADDEDCOUNT: %d", count, skippedCount, addedCount));
 
       if (count <= 0) {
         sinkCounter.incrementBatchEmptyCount();
