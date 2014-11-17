@@ -193,20 +193,9 @@ public class ElasticSearchSink extends AbstractSink implements Configurable {
         String realIndexType = BucketPath.escapeString(indexType, headers);
         String realIndexName = BucketPath.escapeString(indexName, headers);
 
-        //logger.info(String.format("ES message indexName: '%s', indexType: '%s'.", indexName, indexType));
-        //logger.info(String.format("ES message realIndexName: '%s', realIndexType: '%s'.", realIndexName, realIndexType));
-
-//        if(realIndexName.startsWith("fs-installer.metrics")) {
-//            String body = new String(event.getBody(), "UTF-8");
-//            String heads = DumpToString.dump(event.getHeaders());
-//            String errormsg = String.format("Adding event: 'indexName:%s;indexType:%s', '%s'", realIndexName, realIndexType, body);
-//            logger.info(errormsg);
-//        }
-
         //if calculated ES indexname or indextype is empty we skip this message since it is malformed
         if(!(realIndexName.isEmpty() || realIndexType.isEmpty())) {
 //            String body = new String(event.getBody(), "UTF-8");
-//            String heads = DumpToString.dump(event.getHeaders());
 //            String errormsg = String.format("Adding event: 'indexName:%s;indexType:%s', '%s'", realIndexName, realIndexType, body);
 //            logger.info(errormsg);
             client.addEvent(event, indexNameBuilder, realIndexType, ttlMs);
@@ -221,9 +210,9 @@ public class ElasticSearchSink extends AbstractSink implements Configurable {
       }
 
 
-      logger.info(String.format("COUNT: %d; SKIPPEDCONT: %d; ADDEDCOUNT: %d", count, skippedCount, addedCount));
+      // logger.info(String.format("COUNT: %d; SKIPPEDCOUNT: %d; ADDEDCOUNT: %d", count, skippedCount, addedCount));
       count = count - skippedCount;
-      logger.info(String.format("COUNT: %d; SKIPPEDCONT: %d; ADDEDCOUNT: %d", count, skippedCount, addedCount));
+      // logger.info(String.format("COUNT: %d; SKIPPEDCOUNT: %d; ADDEDCOUNT: %d", count, skippedCount, addedCount));
 
       if (count <= 0) {
         sinkCounter.incrementBatchEmptyCount();
